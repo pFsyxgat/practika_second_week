@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Клиент-Серверная система</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #f5f5f5; padding: 20px; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        h1 { color: #333; margin-bottom: 10px; }
+        p { color: #666; margin-bottom: 20px; }
+        .card { background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #dee2e6; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; color: #495057; }
+        select, input, textarea { width: 100%; padding: 10px; border: 1px solid #ced4da; border-radius: 5px; font-size: 16px; }
+        textarea { height: 150px; font-family: 'Courier New', monospace; }
+        button { background: #007bff; color: white; border: none; padding: 12px 24px; border-radius: 5px; font-size: 16px; cursor: pointer; width: 100%; }
+        button:hover { background: #0056b3; }
+        .examples { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin-top: 15px; }
+        .example { background: white; padding: 15px; border-radius: 5px; border-left: 4px solid #28a745; }
+        .example-btn { background: #28a745; color: white; border: none; padding: 8px 15px; border-radius: 3px; cursor: pointer; margin: 5px 0; }
+        .example-btn:hover { background: #218838; }
+        footer { margin-top: 20px; text-align: center; color: #6c757d; font-size: 14px; }
+        .server-info { background: #e9ecef; padding: 10px; border-radius: 5px; margin: 10px 0; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📡 Клиент-Серверная система</h1>
+        <p>Веб-клиент для отправки запросов на сервер API</p>
+        
+        <div class="server-info">
+            <strong>Сервер API:</strong> http://127.0.0.1:5000
+        </div>
+
+        <div class="card">
+            <h2>📤 Отправить запрос на сервер</h2>
+            <form action="/send" method="POST">
+                <div class="form-group">
+                    <label>Метод HTTP:</label>
+                    <select name="method">
+                        <option value="GET">GET - Получить данные</option>
+                        <option value="POST" selected>POST - Создать</option>
+                        <option value="PUT">PUT - Обновить</option>
+                        <option value="DELETE">DELETE - Удалить</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Эндпоинт API:</label>
+                    <select name="endpoint">
+                        <option value="/api/users">/api/users - Пользователи</option>
+                        <option value="/api/products">/api/products - Товары</option>
+                        <option value="/api/orders">/api/orders - Заказы</option>
+                        <option value="/api/calculate">/api/calculate - Расчет стоимости</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Данные (JSON формат):</label>
+                    <textarea name="data" id="data-input">{
+  "name": "Новый пользователь",
+  "role": "user"
+}</textarea>
+                </div>
+
+                <button type="submit">📨 Отправить запрос на сервер</button>
+            </form>
+        </div>
+
+        <div class="card">
+            <h3>📋 Примеры запросов:</h3>
+            <div class="examples">
+                <div class="example">
+                    <button class="example-btn" onclick="loadExample(1)">Получить пользователей</button>
+                    <p><small>Метод: GET, Эндпоинт: /api/users</small></p>
+                </div>
+                <div class="example">
+                    <button class="example-btn" onclick="loadExample(2)">Создать пользователя</button>
+                    <p><small>Метод: POST, Эндпоинт: /api/users</small></p>
+                    <pre style="font-size: 12px; margin-top: 5px;">{"name": "Алексей", "role": "admin"}</pre>
+                </div>
+                <div class="example">
+                    <button class="example-btn" onclick="loadExample(3)">Создать заказ</button>
+                    <p><small>Метод: POST, Эндпоинт: /api/orders</small></p>
+                    <pre style="font-size: 12px; margin-top: 5px;">{"user_id": 1, "product": "Ноутбук"}</pre>
+                </div>
+                <div class="example">
+                    <button class="example-btn" onclick="loadExample(4)">Рассчитать стоимость</button>
+                    <p><small>Метод: POST, Эндпоинт: /api/calculate</small></p>
+                    <pre style="font-size: 12px; margin-top: 5px;">{"product_id": 1, "quantity": 3}</pre>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>Клиент-серверный модуль: разделение на клиентскую и серверную части</p>
+        </footer>
+    </div>
+
+    <script>
+        const examples = {
+            1: {method: 'GET', endpoint: '/api/users', data: '{}'},
+            2: {method: 'POST', endpoint: '/api/users', data: '{\n  "name": "Алексей",\n  "role": "admin"\n}'},
+            3: {method: 'POST', endpoint: '/api/orders', data: '{\n  "user_id": 1,\n  "product": "Ноутбук"\n}'},
+            4: {method: 'POST', endpoint: '/api/calculate', data: '{\n  "product_id": 1,\n  "quantity": 3\n}'}
+        };
+
+        function loadExample(num) {
+            const ex = examples[num];
+            document.querySelector('select[name="method"]').value = ex.method;
+            document.querySelector('select[name="endpoint"]').value = ex.endpoint;
+            document.getElementById('data-input').value = ex.data;
+        }
+    </script>
+</body>
+</html>
